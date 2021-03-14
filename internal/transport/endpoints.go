@@ -13,14 +13,6 @@ type Endpoints struct {
 	DeleteItemEndpoint endpoint.Endpoint
 }
 
-func MakeEndpoints(svc internal.Service) Endpoints {
-	return Endpoints{
-		CreateItemEndpoint: MakeCreateItemEndpoint(svc),
-		UpdateItemEndpoint: MakeUpdateItemEndpoint(svc),
-		DeleteItemEndpoint: MakeDeleteItemEndpoint(svc),
-	}
-}
-
 func MakeCreateItemEndpoint(svc internal.Service) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (response interface{}, err error) {
 		req, validReq := request.(CreateItemRequest)
@@ -51,5 +43,13 @@ func MakeDeleteItemEndpoint(svc internal.Service) endpoint.Endpoint {
 		}
 		svc.DeleteItem(req.Id)
 		return DeleteItemResponse{}, err
+	}
+}
+
+func MakeEndpoints(svc internal.Service) Endpoints {
+	return Endpoints{
+		CreateItemEndpoint: MakeCreateItemEndpoint(svc),
+		UpdateItemEndpoint: MakeUpdateItemEndpoint(svc),
+		DeleteItemEndpoint: MakeDeleteItemEndpoint(svc),
 	}
 }
