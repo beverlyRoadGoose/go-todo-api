@@ -16,6 +16,8 @@ type Endpoints struct {
 func MakeEndpoints(svc internal.Service) Endpoints {
 	return Endpoints{
 		CreateItemEndpoint: MakeCreateItemEndpoint(svc),
+		UpdateItemEndpoint: MakeUpdateItemEndpoint(svc),
+		DeleteItemEndpoint: MakeDeleteItemEndpoint(svc),
 	}
 }
 

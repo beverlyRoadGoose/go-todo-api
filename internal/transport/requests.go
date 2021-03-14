@@ -2,7 +2,7 @@ package transport
 
 import (
 	"github.com/google/uuid"
-	"todo-api/internal/todo"
+	"todo-api/internal/item"
 )
 
 type CreateItemRequest struct {
@@ -10,7 +10,7 @@ type CreateItemRequest struct {
 }
 
 type CreateItemResponse struct {
-	Item todo.Item `json:"item"`
+	Item item.Item `json:"item"`
 }
 
 type UpdateItemRequest struct {
@@ -19,7 +19,7 @@ type UpdateItemRequest struct {
 }
 
 type UpdateItemResponse struct {
-	Item todo.Item `json:"item"`
+	Item item.Item `json:"item"`
 }
 
 type DeleteItemRequest struct {

@@ -16,4 +16,4 @@ services:
     expose:
       - 3307
     volumes:
-      - todo-list:/var/lib/mysql
+      - todo-api:/var/lib/mysql
