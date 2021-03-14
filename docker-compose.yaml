@@ -1,0 +1,19 @@
+version: '3.9'
+
+volumes:
+  todo-api:
+
+services:
+  database:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: todo_api
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - 3307:3306
+    expose:
+      - 3307
+    volumes:
+      - todo-list:/var/lib/mysql
