@@ -20,7 +20,7 @@ func MakeCreateItemEndpoint(svc internal.Service) endpoint.Endpoint {
 			return nil, errors.New("invalid request")
 		}
 		item := svc.CreateItem(req.Text)
-		return CreateItemResponse{Item: item}, err
+		return CreateItemResponse{Item: *item}, err
 	}
 }
 
@@ -30,8 +30,11 @@ func MakeUpdateItemEndpoint(svc internal.Service) endpoint.Endpoint {
 		if !validReq {
 			return nil, errors.New("invalid request")
 		}
-		item := svc.UpdateItem(req.Text, req.Done)
-		return UpdateItemResponse{Item: item}, err
+		item, err := svc.UpdateItem(req.Id, req.Text, req.Done)
+		if err != nil {
+			return nil, err
+		}
+		return UpdateItemResponse{Item: *item}, nil
 	}
 }
 

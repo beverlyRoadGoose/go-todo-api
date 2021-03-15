@@ -14,8 +14,9 @@ type CreateItemResponse struct {
 }
 
 type UpdateItemRequest struct {
-	Text string `json:"text"`
-	Done bool   `json:"done"`
+	Id   uuid.UUID `json:"id"`
+	Text string    `json:"text"`
+	Done bool      `json:"done"`
 }
 
 type UpdateItemResponse struct {

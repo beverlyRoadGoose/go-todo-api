@@ -4,8 +4,10 @@ import (
 	"context"
 	"encoding/json"
 	kithttp "github.com/go-kit/kit/transport/http"
+	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
 )
 
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
@@ -23,6 +25,19 @@ func decodeCreateNewItemRequest(_ context.Context, r *http.Request) (interface{}
 	return CreateItemRequest{Text: text}, nil
 }
 
+func decodeUpdateNewItemRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := uuid.Parse(r.FormValue("id"))
+	if err != nil {
+		return nil, err
+	}
+	done, err := strconv.ParseBool(r.FormValue("done"))
+	if err != nil {
+		return nil, err
+	}
+	text := r.FormValue("text")
+	return UpdateItemRequest{Id: id, Text: text, Done: done}, nil
+}
+
 func NewHTTPHandler(e Endpoints) http.Handler {
 	router := mux.NewRouter()
 	v1SubRouter := router.PathPrefix("/api/v1").Subrouter()
@@ -34,6 +49,12 @@ func NewHTTPHandler(e Endpoints) http.Handler {
 	v1SubRouter.Methods("POST").Path(endpoint).Handler(kithttp.NewServer(
 		e.CreateItemEndpoint,
 		decodeCreateNewItemRequest,
+		encodeResponse,
+		options...))
+
+	v1SubRouter.Methods("PUT").Path(endpoint).Handler(kithttp.NewServer(
+		e.UpdateItemEndpoint,
+		decodeUpdateNewItemRequest,
 		encodeResponse,
 		options...))
 

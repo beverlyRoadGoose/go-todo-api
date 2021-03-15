@@ -6,8 +6,8 @@ import (
 )
 
 type Service interface {
-	CreateItem(text string) item.Item
-	UpdateItem(text string, done bool) item.Item
+	CreateItem(text string) *item.Item
+	UpdateItem(id uuid.UUID, text string, done bool) (*item.Item, error)
 	DeleteItem(id uuid.UUID)
 }
 
@@ -19,12 +19,12 @@ func NewTodoApiService() Service {
 	return &todoApiService{}
 }
 
-func (t *todoApiService) CreateItem(text string) item.Item {
+func (t *todoApiService) CreateItem(text string) *item.Item {
 	return itemsManager.CreateItem(text)
 }
 
-func (t *todoApiService) UpdateItem(text string, done bool) item.Item {
-	panic("implement me")
+func (t *todoApiService) UpdateItem(id uuid.UUID, text string, done bool) (*item.Item, error) {
+	return itemsManager.UpdateItem(id, text, done)
 }
 
 func (t *todoApiService) DeleteItem(id uuid.UUID) {
