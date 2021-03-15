@@ -7,6 +7,8 @@ import (
 
 type ItemsManager struct{}
 
+var dh = database.NewHandler()
+
 func NewItemsManager() *ItemsManager {
 	return &ItemsManager{}
 }
@@ -16,6 +18,6 @@ func (im *ItemsManager) CreateItem(text string) Item {
 		Id:   uuid.New(),
 		Text: text,
 	}
-	database.DB.Create(item)
+	dh.DB().Create(item)
 	return item
 }
