@@ -8,7 +8,7 @@ import (
 type Service interface {
 	CreateItem(text string) *item.Item
 	UpdateItem(id uuid.UUID, text string, done bool) (*item.Item, error)
-	DeleteItem(id uuid.UUID)
+	DeleteItem(id uuid.UUID) (bool, error)
 }
 
 type todoApiService struct{}
@@ -27,6 +27,6 @@ func (t *todoApiService) UpdateItem(id uuid.UUID, text string, done bool) (*item
 	return itemsManager.UpdateItem(id, text, done)
 }
 
-func (t *todoApiService) DeleteItem(id uuid.UUID) {
-	panic("implement me")
+func (t *todoApiService) DeleteItem(id uuid.UUID) (bool, error) {
+	return itemsManager.DeleteItem(id)
 }

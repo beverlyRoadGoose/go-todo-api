@@ -9,7 +9,7 @@ import (
 
 type ItemsManager struct{}
 
-var dh = database.NewHandler()
+var dh = database.GetHandler()
 
 func NewItemsManager() *ItemsManager {
 	return &ItemsManager{}
@@ -42,4 +42,15 @@ func (im *ItemsManager) UpdateItem(id uuid.UUID, text string, done bool) (*Item,
 	item.Done = done
 	dh.DB().Save(&item)
 	return item, nil
+}
+
+func (im *ItemsManager) DeleteItem(id uuid.UUID) (bool, error) {
+	if !itemExists(id) {
+		return false, errors.New("no item found with the given id")
+	}
+	log.WithFields(log.Fields{"id": id}).Info("Deleting item")
+	item := &Item{}
+	dh.DB().First(&item, id)
+	dh.DB().Delete(&item)
+	return true, nil
 }

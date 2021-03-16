@@ -38,6 +38,14 @@ func decodeUpdateNewItemRequest(_ context.Context, r *http.Request) (interface{}
 	return UpdateItemRequest{Id: id, Text: text, Done: done}, nil
 }
 
+func decodeDeleteItemRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := uuid.Parse(r.FormValue("id"))
+	if err != nil {
+		return nil, err
+	}
+	return DeleteItemRequest{Id: id}, nil
+}
+
 func NewHTTPHandler(e Endpoints) http.Handler {
 	router := mux.NewRouter()
 	v1SubRouter := router.PathPrefix("/api/v1").Subrouter()
@@ -55,6 +63,12 @@ func NewHTTPHandler(e Endpoints) http.Handler {
 	v1SubRouter.Methods("PUT").Path(endpoint).Handler(kithttp.NewServer(
 		e.UpdateItemEndpoint,
 		decodeUpdateNewItemRequest,
+		encodeResponse,
+		options...))
+
+	v1SubRouter.Methods("DELETE").Path(endpoint).Handler(kithttp.NewServer(
+		e.DeleteItemEndpoint,
+		decodeDeleteItemRequest,
 		encodeResponse,
 		options...))
 

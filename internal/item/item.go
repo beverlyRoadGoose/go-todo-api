@@ -12,6 +12,6 @@ type Item struct {
 }
 
 func init() {
-	dh := database.NewHandler()
+	dh := database.GetHandler()
 	dh.DB().AutoMigrate(&Item{})
 }

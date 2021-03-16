@@ -27,4 +27,6 @@ type DeleteItemRequest struct {
 	Id uuid.UUID `json:"id"`
 }
 
-type DeleteItemResponse struct{}
+type DeleteItemResponse struct {
+	Deleted bool `json:"deleted"`
+}

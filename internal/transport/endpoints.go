@@ -44,8 +44,11 @@ func MakeDeleteItemEndpoint(svc internal.Service) endpoint.Endpoint {
 		if !validReq {
 			return nil, errors.New("invalid request")
 		}
-		svc.DeleteItem(req.Id)
-		return DeleteItemResponse{}, err
+		deleted, err := svc.DeleteItem(req.Id)
+		if err != nil {
+			return nil, err
+		}
+		return DeleteItemResponse{Deleted: deleted}, err
 	}
 }
 
