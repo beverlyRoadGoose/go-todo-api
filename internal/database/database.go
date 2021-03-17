@@ -5,15 +5,19 @@ import (
 	"gorm.io/gorm"
 )
 
-type Handler struct{}
-
-var dsn = "appuser:password@tcp(127.0.0.1:3307)/todo_api?charset=utf8mb4&parseTime=True&loc=Local"
-var db, _ = gorm.Open(mysql.Open(dsn), &gorm.Config{})
-
-func GetHandler() *Handler {
-	return &Handler{}
+type Handler struct {
+	database *gorm.DB
 }
 
-func (dh *Handler) DB() *gorm.DB {
-	return db
+func GetHandler() *Handler {
+	dsn := "appuser:password@tcp(127.0.0.1:3307)/todo_api?charset=utf8mb4&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		panic(err)
+	}
+	return &Handler{database: db}
+}
+
+func (h *Handler) DB() *gorm.DB {
+	return h.database
 }

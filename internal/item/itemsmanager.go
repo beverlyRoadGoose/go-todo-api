@@ -5,55 +5,51 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-type ItemsManager struct{}
-
-var repository = NewItemsRepository()
-
-func NewItemsManager() *ItemsManager {
-	return &ItemsManager{}
+type ItemsManager struct {
+	repository Repository
 }
 
-func getItem(id uuid.UUID) (*Item, error) {
-	item, err := repository.findById(&id)
+func NewItemsManager(r Repository) *ItemsManager {
+	return &ItemsManager{repository: r}
+}
+
+func (im *ItemsManager) GetItem(id uuid.UUID) (*Item, error) {
+	item, err := im.repository.findById(&id)
 	if err != nil {
 		return nil, err
 	}
 	return item, nil
 }
 
-func (_ *ItemsManager) GetItem(id uuid.UUID) (*Item, error) {
-	return getItem(id)
-}
-
-func (_ *ItemsManager) CreateItem(text string) (*Item, error) {
+func (im *ItemsManager) CreateItem(text string) (*Item, error) {
 	item := &Item{Id: uuid.New(), Text: text}
-	if err := repository.save(item); err != nil {
+	if err := im.repository.save(item); err != nil {
 		return nil, err
 	}
 	return item, nil
 }
 
-func (_ *ItemsManager) UpdateItem(id uuid.UUID, text string, done bool) (*Item, error) {
-	item, err := getItem(id)
+func (im *ItemsManager) UpdateItem(id uuid.UUID, text string, done bool) (*Item, error) {
+	item, err := im.GetItem(id)
 	if err != nil {
 		return nil, err
 	}
 	log.WithFields(log.Fields{"id": id, "text": text, "done": done}).Info("Updating item")
 	item.Text = text
 	item.Done = done
-	if err := repository.update(item); err != nil {
+	if err := im.repository.update(item); err != nil {
 		return nil, err
 	}
 	return item, nil
 }
 
-func (_ *ItemsManager) DeleteItem(id uuid.UUID) (bool, error) {
-	item, err := getItem(id)
+func (im *ItemsManager) DeleteItem(id uuid.UUID) (bool, error) {
+	item, err := im.GetItem(id)
 	if err != nil {
 		return false, err
 	}
 	log.WithFields(log.Fields{"id": id}).Info("Deleting item")
-	if err := repository.delete(item); err != nil {
+	if err := im.repository.delete(item); err != nil {
 		return false, err
 	}
 	return true, nil

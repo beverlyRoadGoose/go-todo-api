@@ -4,10 +4,20 @@ import (
 	"flag"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"todo-api/internal/database"
+	"todo-api/internal/item"
 
 	"todo-api/internal"
 	"todo-api/internal/transport"
 )
+
+func migrateDbSchema() {
+	log.Info("Migrating database schema")
+	dh := database.GetHandler()
+	if err := dh.DB().AutoMigrate(&item.Item{}); err != nil {
+		panic(err)
+	}
+}
 
 func init() {
 	log.SetFormatter(&log.TextFormatter{})
@@ -23,6 +33,7 @@ func main() {
 	)
 
 	flag.Parse()
+	migrateDbSchema()
 	server := &http.Server{
 		Addr:    *port,
 		Handler: httpHandler,
