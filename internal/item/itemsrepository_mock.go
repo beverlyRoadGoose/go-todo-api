@@ -2,7 +2,6 @@ package item
 
 import (
 	"github.com/google/uuid"
-	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/mock"
 )
 
@@ -21,8 +20,10 @@ func (m *MockItemsRepository) update(i *Item) error {
 }
 
 func (m *MockItemsRepository) findById(id *uuid.UUID) (*Item, error) {
-	log.Info("Invoking mocked items repository findById method")
 	args := m.Called(id)
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*Item), args.Error(1)
 }
 
@@ -33,5 +34,8 @@ func (m *MockItemsRepository) delete(i *Item) error {
 
 func (m *MockItemsRepository) getAll() (*[]Item, error) {
 	args := m.Called()
+	if args.Get(0) == nil {
+		return nil, args.Error(1)
+	}
 	return args.Get(0).(*[]Item), args.Error(1)
 }

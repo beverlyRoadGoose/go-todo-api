@@ -15,7 +15,7 @@ func migrateDbSchema() {
 	log.Info("Migrating database schema")
 	dh := database.GetHandler()
 	if err := dh.DB().AutoMigrate(&item.Item{}); err != nil {
-		panic(err)
+		panic(`error migrating db schema:` + err.Error())
 	}
 }
 
