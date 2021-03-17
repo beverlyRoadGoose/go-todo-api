@@ -12,12 +12,20 @@ import (
 
 func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
-	json.NewEncoder(w).Encode(map[string]interface{}{"error": err.Error()})
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{"error": err.Error()})
 }
 
 func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	return json.NewEncoder(w).Encode(response)
+}
+
+func decodeGetItemRequest(_ context.Context, r *http.Request) (interface{}, error) {
+	id, err := uuid.Parse(r.FormValue("id"))
+	if err != nil {
+		return nil, err
+	}
+	return GetItemRequest{Id: id}, nil
 }
 
 func decodeCreateNewItemRequest(_ context.Context, r *http.Request) (interface{}, error) {
@@ -53,6 +61,12 @@ func NewHTTPHandler(e Endpoints) http.Handler {
 	options := []kithttp.ServerOption{
 		kithttp.ServerErrorEncoder(encodeError),
 	}
+
+	v1SubRouter.Methods("GET").Path(endpoint).Handler(kithttp.NewServer(
+		e.GetItemEndpoint,
+		decodeGetItemRequest,
+		encodeResponse,
+		options...))
 
 	v1SubRouter.Methods("POST").Path(endpoint).Handler(kithttp.NewServer(
 		e.CreateItemEndpoint,

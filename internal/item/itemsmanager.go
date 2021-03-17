@@ -1,56 +1,60 @@
 package item
 
 import (
-	"errors"
 	"github.com/google/uuid"
 	log "github.com/sirupsen/logrus"
-	"todo-api/internal/database"
 )
 
 type ItemsManager struct{}
 
-var dh = database.GetHandler()
+var repository = NewItemsRepository()
 
 func NewItemsManager() *ItemsManager {
 	return &ItemsManager{}
 }
 
-func itemExists(id uuid.UUID) bool {
-	if query := dh.DB().First(&Item{}, id); query.Error != nil {
-		return false
+func getItem(id uuid.UUID) (*Item, error) {
+	item, err := repository.findById(&id)
+	if err != nil {
+		return nil, err
 	}
-	return true
-}
-
-func (im *ItemsManager) CreateItem(text string) *Item {
-	item := Item{
-		Id:   uuid.New(),
-		Text: text,
-	}
-	dh.DB().Create(item)
-	return &item
-}
-
-func (im *ItemsManager) UpdateItem(id uuid.UUID, text string, done bool) (*Item, error) {
-	if !itemExists(id) {
-		return nil, errors.New("no item found with the given id")
-	}
-	log.WithFields(log.Fields{"id": id, "text": text, "done": done}).Info("Updating item")
-	item := &Item{}
-	dh.DB().First(&item, id)
-	item.Text = text
-	item.Done = done
-	dh.DB().Save(&item)
 	return item, nil
 }
 
-func (im *ItemsManager) DeleteItem(id uuid.UUID) (bool, error) {
-	if !itemExists(id) {
-		return false, errors.New("no item found with the given id")
+func (_ *ItemsManager) GetItem(id uuid.UUID) (*Item, error) {
+	return getItem(id)
+}
+
+func (_ *ItemsManager) CreateItem(text string) (*Item, error) {
+	item := &Item{Id: uuid.New(), Text: text}
+	if err := repository.save(item); err != nil {
+		return nil, err
+	}
+	return item, nil
+}
+
+func (_ *ItemsManager) UpdateItem(id uuid.UUID, text string, done bool) (*Item, error) {
+	item, err := getItem(id)
+	if err != nil {
+		return nil, err
+	}
+	log.WithFields(log.Fields{"id": id, "text": text, "done": done}).Info("Updating item")
+	item.Text = text
+	item.Done = done
+	if err := repository.update(item); err != nil {
+		return nil, err
+	}
+	return item, nil
+}
+
+func (_ *ItemsManager) DeleteItem(id uuid.UUID) (bool, error) {
+	item, err := getItem(id)
+	if err != nil {
+		return false, err
 	}
 	log.WithFields(log.Fields{"id": id}).Info("Deleting item")
-	item := &Item{}
-	dh.DB().First(&item, id)
-	dh.DB().Delete(&item)
+	if err := repository.delete(item); err != nil {
+		return false, err
+	}
 	return true, nil
 }

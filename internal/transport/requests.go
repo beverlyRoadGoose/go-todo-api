@@ -5,6 +5,14 @@ import (
 	"todo-api/internal/item"
 )
 
+type GetItemRequest struct {
+	Id uuid.UUID `json:"id"`
+}
+
+type GetItemResponse struct {
+	Item item.Item `json:"item"`
+}
+
 type CreateItemRequest struct {
 	Text string `json:"text"`
 }
