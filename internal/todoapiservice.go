@@ -16,10 +16,8 @@ type todoApiService struct {
 	itemsManager *item.ItemsManager
 }
 
-func NewTodoApiService() Service {
-	return &todoApiService{
-		itemsManager: item.NewItemsManager(item.NewItemsRepository()),
-	}
+func NewTodoApiService(im *item.ItemsManager) Service {
+	return &todoApiService{itemsManager: im}
 }
 
 func (s *todoApiService) GetItem(id uuid.UUID) (*item.Item, error) {
