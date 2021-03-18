@@ -21,7 +21,7 @@ services:
 
   todoapi:
     build: .
-    container_name: todo_api
+    container_name: todoapi
     depends_on:
       - database
     ports:
