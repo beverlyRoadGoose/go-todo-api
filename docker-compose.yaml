@@ -5,11 +5,11 @@ volumes:
 
 services:
   database:
+    container_name: todoapidb
+    image: todoapidb
     build:
       context: .
       target: todoapidb
-    image: todoapidb
-    container_name: todoapidb
     environment:
       MYSQL_DATABASE: todo_api
       MYSQL_USER: appuser
@@ -23,16 +23,16 @@ services:
       - todo-api:/var/lib/mysql
 
   todoapi:
+    container_name: todoapi
+    image: todoapi
     build:
       context: .
       target: todoapi
-    image: todoapi
-    container_name: todoapi
-    depends_on:
-      - database
     ports:
       - 8080:8080
     expose:
       - 8080
     volumes:
       - todo-api:/var/lib/go
+    depends_on:
+      - database
