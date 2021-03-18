@@ -5,8 +5,11 @@ volumes:
 
 services:
   database:
-    image: mysql:latest
-    container_name: todoapi_db
+    build:
+      context: .
+      target: todoapidb
+    image: todoapidb
+    container_name: todoapidb
     environment:
       MYSQL_DATABASE: todo_api
       MYSQL_USER: appuser
@@ -20,7 +23,10 @@ services:
       - todo-api:/var/lib/mysql
 
   todoapi:
-    build: .
+    build:
+      context: .
+      target: todoapi
+    image: todoapi
     container_name: todoapi
     depends_on:
       - database
