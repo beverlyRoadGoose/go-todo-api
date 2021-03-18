@@ -10,11 +10,11 @@ services:
     build:
       context: .
       target: todoapidb
-    environment:
-      MYSQL_DATABASE: todo_api
-      MYSQL_USER: appuser
-      MYSQL_PASSWORD: password
-      MYSQL_ROOT_PASSWORD: password
+      args:
+        - MYSQL_DATABASE=todo_api
+        - MYSQL_ROOT_PASSWORD=password
+        - MYSQL_USER=appuser
+        - MYSQL_PASSWORD=password
     ports:
       - 3306:3306
     expose:
