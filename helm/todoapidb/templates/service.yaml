@@ -1,9 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "todoapidb.fullname" . }}
-  labels:
-    {{- include "todoapidb.labels" . | nindent 4 }}
+  name: {{ .Chart.Name }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,4 +10,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    {{- include "todoapidb.selectorLabels" . | nindent 4 }}
+      app: {{ .Chart.Name}}
+      tier: database
