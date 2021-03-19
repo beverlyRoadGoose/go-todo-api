@@ -1,9 +1,10 @@
 package main
 
 import (
-	"flag"
 	log "github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
+	"todo-api/pkg/config"
 
 	"todo-api/internal"
 	"todo-api/internal/database"
@@ -29,16 +30,15 @@ func main() {
 		itemsManager = item.NewItemsManager(item.NewItemsRepository())
 		service      = internal.NewTodoApiService(itemsManager)
 		endpoints    = transport.MakeEndpoints(service)
-		port         = flag.String("port", ":8080", "port to run the service on")
+		port         = strconv.Itoa(config.Conf.Server.Port)
 		httpHandler  = transport.NewHTTPHandler(endpoints)
 	)
 
-	flag.Parse()
 	migrateDbSchema()
 	server := &http.Server{
-		Addr:    *port,
+		Addr:    port,
 		Handler: httpHandler,
 	}
-	log.WithFields(log.Fields{"port": *port}).Info("starting up service")
+	log.WithFields(log.Fields{"port": port}).Info("starting up service")
 	_ = server.ListenAndServe()
 }

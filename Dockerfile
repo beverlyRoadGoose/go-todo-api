@@ -13,6 +13,7 @@ ENV MYSQL_PASSWORD $MYSQL_PASSWORD
 FROM golang:1.16.2-buster as todoapi
 WORKDIR /go/src/app
 COPY ../.. .
+ENV CONFIG_FILE /go/src/app/config.yaml
 RUN go get -d -v ./...
 RUN go install -v ./...
 CMD ["./util/wait-for-it.sh", "database:3306", "--", "todoapi"]
