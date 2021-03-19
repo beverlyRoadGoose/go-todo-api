@@ -4,7 +4,7 @@ volumes:
   todo-api:
 
 services:
-  database:
+  todoapidb:
     container_name: todoapidb
     image: todoapidb
     build:
@@ -35,4 +35,4 @@ services:
     volumes:
       - todo-api:/var/lib/go
     depends_on:
-      - database
+      - todoapidb
