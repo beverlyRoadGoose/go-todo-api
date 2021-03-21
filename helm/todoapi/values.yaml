@@ -2,7 +2,10 @@ replicaCount: 1
 image:
   repository: docker.io/beverlyroadgoose/todoapi
   pullPolicy: IfNotPresent
-  tag: "0.0.5"
+  tag: "0.0.7"
+
+database:
+  host: todoapidb
 
 imagePullSecrets: []
 nameOverride: ""

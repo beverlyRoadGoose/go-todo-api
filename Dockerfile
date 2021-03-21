@@ -13,6 +13,8 @@ ENV MYSQL_PASSWORD $MYSQL_PASSWORD
 FROM golang:1.16.2-buster as todoapi
 WORKDIR /go/src/app
 COPY ../.. .
+ARG MYSQL_HOST
+ENV MYSQL_HOST $MYSQL_HOST
 ENV CONFIG_FILE /go/src/app/config.yaml
 RUN go get -d -v ./...
 RUN go install -v ./...

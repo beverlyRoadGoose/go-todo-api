@@ -4,12 +4,11 @@ import (
 	log "github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"todo-api/pkg/config"
-
 	"todo-api/internal"
 	"todo-api/internal/database"
 	"todo-api/internal/item"
 	"todo-api/internal/transport"
+	"todo-api/pkg/config"
 )
 
 func migrateDbSchema() {
@@ -30,7 +29,7 @@ func main() {
 		itemsManager = item.NewItemsManager(item.NewItemsRepository())
 		service      = internal.NewTodoApiService(itemsManager)
 		endpoints    = transport.MakeEndpoints(service)
-		port         = strconv.Itoa(config.Conf.Server.Port)
+		port         = ":" + strconv.Itoa(config.Conf.Server.Port)
 		httpHandler  = transport.NewHTTPHandler(endpoints)
 	)
 
@@ -40,5 +39,5 @@ func main() {
 		Handler: httpHandler,
 	}
 	log.WithFields(log.Fields{"port": port}).Info("starting up service")
-	_ = server.ListenAndServe()
+	server.ListenAndServe()
 }

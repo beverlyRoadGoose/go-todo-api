@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: docker.io/beverlyroadgoose/todoapidb
   pullPolicy: IfNotPresent
-  tag: "0.0.1"
+  tag: "0.0.2"
 
 database:
   name: todo_api
